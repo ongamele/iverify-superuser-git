@@ -49,34 +49,6 @@ const Wizard = () => {
       if (result) {
         alert("User Added!");
 
-        const sendSMS = async () => {
-          try {
-            const apiKey =
-              "2319f2b218dfee20edf691f73ccba12f-73d582c6-316c-4b53-a90c-1c0c1fa1c94f";
-            const message = `Hello, Your Iverify Password is ${newPassword}`;
-
-            const response = await axios.post(
-              "https://api.infobip.com/sms/1/text/single",
-              {
-                from: "27872406515",
-                to: "27" + phoneNumber.toString(),
-                text: message,
-              },
-              {
-                headers: {
-                  Authorization: `App ${apiKey}`,
-                },
-              }
-            );
-
-            console.log("SMS sent successfully:", response.data);
-          } catch (error) {
-            console.error("Error sending SMS:", error);
-          }
-        };
-
-        sendSMS();
-
         const redirectToPage = () => {
           setTimeout(() => {
             navigate("/widget-basic");
@@ -107,7 +79,6 @@ const Wizard = () => {
       idNumber != "",
       municipality != "")
     ) {
-      alert(newPassword);
       if (validateEmail(email)) {
         createUser({
           variables: {
