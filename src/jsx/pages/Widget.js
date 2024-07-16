@@ -47,7 +47,7 @@ const Widget = () => {
           <div className="col-xl-12 col-lg-12 col-xxl-12 col-sm-12">
             <div className="card">
               <div className="card-header">
-                <h4 className="card-title">Users List</h4>
+                <h4 className="card-title">Users List??</h4>
               </div>
               <div className="card-body">
                 <div className="table-responsive recentOrderTable">
@@ -72,7 +72,7 @@ const Widget = () => {
                             <td>{user.idNumber}</td>
                             <td>{user.name}</td>
                             <td>{user.surname}</td>
-                            <td>{user.phoneNumber}</td>
+                            <td>{user.email}</td>
                             <td>
                               <span className="badge badge-rounded badge-primary">
                                 {user.status}
