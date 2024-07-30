@@ -4,7 +4,7 @@ export const COLUMNS = [
   {
     Header: "Id",
     Footer: "Id",
-    accessor: "idNumber",
+    accessor: "id",
     Filter: ColumnFilter,
     //disableFilters: true,
   },
@@ -40,12 +40,6 @@ export const COLUMNS = [
     Filter: ColumnFilter,
   },
   {
-    Header: "Reason",
-    Footer: "Reason",
-    accessor: "reason",
-    Filter: ColumnFilter,
-  },
-  {
     Header: "Phone",
     Footer: "Phone",
     accessor: "phoneNumber",
@@ -57,7 +51,7 @@ export const GROUPED_COLUMNS = [
   {
     Header: "Id",
     Footer: "Id",
-    accessor: "idNumber",
+    accessor: "id",
   },
   {
     Header: "Name",
@@ -88,11 +82,6 @@ export const GROUPED_COLUMNS = [
         Header: "Status",
         Footer: "Status",
         accessor: "status",
-      },
-      {
-        Header: "Reason",
-        Footer: "Reason",
-        accessor: "reason",
       },
       {
         Header: "Phone",

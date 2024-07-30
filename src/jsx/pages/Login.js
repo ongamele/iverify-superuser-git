@@ -7,8 +7,7 @@ import "./style.css";
 // image
 import logo from "../../images/logo-full.png";
 import { AuthContext } from "../components/context-auth/auth";
-import { LOGIN_USER } from "../../Graphql/Mutations";
-import { FORGOT_PASSWORD } from "../../Graphql/Mutations";
+import { LOGIN_SUPERUSER } from "../../Graphql/Mutations";
 
 function Login(props) {
   const [email, setEmail] = useState("");
@@ -20,13 +19,16 @@ function Login(props) {
   const context = useContext(AuthContext);
   //const { user } = useContext(AuthContext);
 
-  const [loginUser, { loading }] = useMutation(LOGIN_USER, {
+  const [loginSuperUser, { loading }] = useMutation(LOGIN_SUPERUSER, {
     update(_, result) {
-      context.login(result.data.login);
-      navigate("/dashboard");
+      if (result.data.loginSuperuser == "Success") {
+        navigate("/dashboard");
+      } else {
+        alert(result.data.loginSuperuser);
+      }
     },
     onError(err) {
-      alert("User Not Found! " + err);
+      alert("User Not Foundss! " + err);
     },
 
     variables: {
@@ -35,34 +37,8 @@ function Login(props) {
     },
   });
 
-  const [forgotPassword, { loading: resetPasswordLoading }] = useMutation(
-    FORGOT_PASSWORD,
-    {
-      update(_, result) {
-        if (result) {
-          alert(result.data.forgotPassword);
-        }
-      },
-      onError(err) {
-        alert("User Not Found!");
-      },
-
-      variables: {
-        email,
-      },
-    }
-  );
-
   function login() {
-    loginUser();
-  }
-
-  function onForgotPassword() {
-    if (email != "") {
-      forgotPassword();
-    } else {
-      alert("Please provide your email address!");
-    }
+    loginSuperUser();
   }
 
   return (
@@ -74,15 +50,8 @@ function Login(props) {
           </div>
           <h3 className="mb-2">Welcome!</h3>
           <h4>
-            You are about to log into the online Iverify Application of Zimako
-            Group. Access to this platform is restricted.
+            Administration
             <br />
-            Do not attempt to enter this site if you do not have the explicit
-            consent of Zimako Group and your own unique login credentials.
-            <br /> This site contains personal information under the control of
-            Zimako Group and is subject to Zimako Group rules regarding the
-            processing of personal information and further subject to the
-            Iverify Terms of Use
           </h4>
         </div>
       </div>
@@ -160,14 +129,6 @@ function Login(props) {
                       onClick={login}>
                       Sign In
                     </button>
-                  </div>
-                  <div className="new-account mt-3">
-                    <p>
-                      Forgot password?{" "}
-                      <Link className="text-primary" onClick={onForgotPassword}>
-                        Reset
-                      </Link>
-                    </p>
                   </div>
                 </div>
               </div>

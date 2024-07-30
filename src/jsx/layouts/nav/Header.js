@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+/// Scroll
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 /// Image
 import profile from "../../../images/user.jpg";
@@ -10,7 +11,7 @@ import { Dropdown } from "react-bootstrap";
 import LogoutPage from "./Logout";
 
 const Header = ({ onNote }) => {
-  const navigate = useNavigate();
+  const [searchBut, setSearchBut] = useState(false);
   var path = window.location.pathname.split("/");
   var name = path[path.length - 1].split("-");
   var filterName = name.length >= 3 ? name.filter((n, i) => i > 0) : name;

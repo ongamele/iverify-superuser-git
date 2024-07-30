@@ -42,6 +42,7 @@ export const CREATE_APPLICATION = gql`
     $sassaNumber: String
     $ageRange: String
     $status: String
+    $deceased: String
     $applicationDate: String
   ) {
     createApplication(
@@ -86,6 +87,7 @@ export const CREATE_APPLICATION = gql`
         sassaNumber: $sassaNumber
         ageRange: $ageRange
         status: $status
+        deceased: $deceased
         applicationDate: $applicationDate
       }
     )
@@ -96,17 +98,21 @@ export const CREATE_USER = gql`
   mutation createUser(
     $name: String!
     $surname: String!
-    $phoneNumber: String!
+    $phoneNumber: Int!
     $email: String!
     $idNumber: String!
+    $municipality: String!
+    $password: String!
   ) {
     createUser(
       registerInput: {
         name: $name
-        surname: $surnaame
+        surname: $surname
         phoneNumber: $phoneNumber
         email: $email
         idNumber: $idNumber
+        municipality: $municipality
+        password: $password
       }
     ) {
       id
@@ -115,66 +121,13 @@ export const CREATE_USER = gql`
       phoneNumber
       email
       idNumber
-      token
       createdAt
     }
   }
 `;
 
-export const LOGIN_USER = gql`
-  mutation login($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
-      id
-      name
-      surname
-      phoneNumber
-      email
-      idNumber
-      token
-      createdAt
-    }
-  }
-`;
-
-export const GET_SELECTED_APPLICATION = gql`
-  mutation getSelectedApplication($id: String!) {
-    getSelectedApplication(id: $id) {
-      id
-      userId
-      name
-      surname
-      email
-      phoneNumber
-      idNumber
-      address
-      postalCode
-      country
-      municipality
-      municipalAccountNumber
-      race
-      gender
-      houseHoldHead
-      maritalStatus
-      wardNumber
-      dependents
-      bankStatement
-      idBook
-      affidavid
-      status
-      reason
-      createdAt
-    }
-  }
-`;
-
-export const FORGOT_PASSWORD = gql`
-  mutation forgotPassword($email: String!) {
-    forgotPassword(email: $email)
-  }
-`;
-
-export const UPDATE_PASSWORD = gql`
-  mutation updatePassword($id: String!, $password: String!) {
-    updatePassword(id: $id, password: $password)
+export const LOGIN_SUPERUSER = gql`
+  mutation loginSuperuser($email: String!, $password: String!) {
+    loginSuperuser(email: $email, password: $password)
   }
 `;
