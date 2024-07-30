@@ -8,7 +8,6 @@ import { AuthProvider, AuthContext } from "./components/context-auth/auth";
 import "./index.css";
 import "./chart.css";
 import "./step.css";
-//Authentication pages
 import Login from "./pages/Login";
 /// Layout
 import Nav from "./layouts/nav";
@@ -20,17 +19,17 @@ import Home from "./components/Dashboard/Home";
 /// Widget
 import Widget from "./pages/Widget";
 
-/// Active Applications
-import ActiveApplications from "./pages/ActiveApplications";
-
 /// Table
 import FilteringTable from "./components/table/FilteringTable/FilteringTable";
 
 /// Form
 import Wizard from "./components/Forms/Wizard/Wizard";
 
+/// Pages
+
 import Setting from "./layouts/Setting";
 import { ThemeContext } from "../context/ThemeContext";
+import ForgotPassword from "./pages/ForgotPassword";
 
 const Markup = () => {
   // const { menuToggle } = useContext(ThemeContext);
@@ -41,9 +40,6 @@ const Markup = () => {
 
     /// Widget
     { url: "widget-basic", component: <Widget /> },
-
-    //Active Applications
-    { url: "active-applications", component: <ActiveApplications /> },
 
     /// Form
     { url: "form-wizard", component: <Wizard /> },
@@ -61,6 +57,10 @@ const Markup = () => {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route
+            path="/forgot-password/:id/reset/:tokenn"
+            element={<ForgotPassword />}
+          />
           <Route element={<MainLayout />}>
             {allroutes.map((data, i) => (
               <Route

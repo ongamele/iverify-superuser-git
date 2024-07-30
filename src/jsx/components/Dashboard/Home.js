@@ -1,43 +1,65 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useQuery } from "@apollo/client";
+import React, { useMemo, useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import * as XLSX from "xlsx";
-import Modal from "react-bootstrap/Modal";
+
 //Import Components
-import { ThemeContext } from "../../../context/ThemeContext";
-import { AuthContext } from "../context-auth/auth";
-import Details from "./Details";
+import { useQuery } from "@apollo/client";
+
+import Modal from "react-bootstrap/Modal";
 import SelectedDetails from "./SelectedDetails";
-import { GET_ALL_USER_APPLICATIONS } from "../../../Graphql/Queries";
-import { GET_ALL_APPROVED } from "../../../Graphql/Queries";
-import { GET_ALL_DECLINED } from "../../../Graphql/Queries";
-import { GET_TOTAL_MUNICIPALITY_APPLICATIONS_COUNT } from "../../../Graphql/Queries";
-import { GET_ALL_EXCEL_APPLICATIONS } from "../../../Graphql/Queries";
+import { AuthContext } from "../context-auth/auth";
+import { GET_ALL_APPLICATIONS_COUNT } from "../../../Graphql/Queries";
+import { GET_SUCCESSFUL_APPLICATIONS_COUNT } from "../../../Graphql/Queries";
+import { GET_FAILED_APPLICATIONS_COUNT } from "../../../Graphql/Queries";
+import { GET_LATEST_APPLICATIONS_COUNT } from "../../../Graphql/Queries";
+
 const Home = () => {
   const { user } = useContext(AuthContext);
   const [show, setShow] = useState(false);
-  const [showCard, setShowCard] = useState(false);
   const [id, setId] = useState(false);
   const [dataType, setDataType] = useState(false);
-  const [municipality, setMunicipality] = useState();
-  const { changeBackground } = useContext(ThemeContext);
-  useEffect(() => {
-    changeBackground({ value: "light", label: "Light" });
-  }, []);
 
-  const { data: totalApplications } = useQuery(GET_ALL_USER_APPLICATIONS);
-  const { data: allApproved } = useQuery(GET_ALL_APPROVED);
-  const { data: allDeclined } = useQuery(GET_ALL_DECLINED);
+  const { data: totalApplications } = useQuery(GET_ALL_APPLICATIONS_COUNT, {
+    pollInterval: 4000,
+    variables: {
+      userId: user.id,
+    },
+  });
 
+  const { data: successfulApplications } = useQuery(
+    GET_SUCCESSFUL_APPLICATIONS_COUNT,
+    {
+      pollInterval: 4000,
+      variables: {
+        userId: user.id,
+      },
+    }
+  );
+
+  const { data: failedApplications } = useQuery(GET_FAILED_APPLICATIONS_COUNT, {
+    pollInterval: 4000,
+    variables: {
+      userId: user.id,
+    },
+  });
+
+  const { data: latestApplications } = useQuery(GET_LATEST_APPLICATIONS_COUNT, {
+    pollInterval: 4000,
+    variables: {
+      userId: user.id,
+    },
+  });
   var successCount = 0;
   var failureCount = 0;
 
-  if (allDeclined && allDeclined.getAllDeclinedCount) {
-    failureCount = allDeclined.getAllDeclinedCount;
+  if (failedApplications && failedApplications.getFailedApplicationsCount) {
+    failureCount = failedApplications.getFailedApplicationsCount;
   }
 
-  if (allApproved && allApproved.getAllApprovedCount) {
-    successCount = allApproved.getAllApprovedCount;
+  if (
+    successfulApplications &&
+    successfulApplications.getSuccessfulApplicationsCount
+  ) {
+    successCount = successfulApplications.getSuccessfulApplicationsCount;
   }
 
   function successPercentage(success, fail) {
@@ -50,83 +72,15 @@ const Home = () => {
     return (fail * 100) / tot;
   }
 
-  function handleDetails(municipality) {
-    setMunicipality(municipality);
+  function handleDetails(type, id) {
+    setId(id);
+    setDataType(type);
     setShow(true);
   }
 
-  const { data: totalMusinaMunicipalityApplications } = useQuery(
-    GET_TOTAL_MUNICIPALITY_APPLICATIONS_COUNT,
-    {
-      pollInterval: 4000,
-      variables: {
-        municipality: "Musina Local Municipality",
-      },
-    }
-  );
-
-  const { data: totalMakhadoMunicipalityApplications } = useQuery(
-    GET_TOTAL_MUNICIPALITY_APPLICATIONS_COUNT,
-    {
-      pollInterval: 4000,
-      variables: {
-        municipality: "Makhado Local Municipality",
-      },
-    }
-  );
-
-  const { data: totalColinsChabaneMunicipalityApplications } = useQuery(
-    GET_TOTAL_MUNICIPALITY_APPLICATIONS_COUNT,
-    {
-      pollInterval: 4000,
-      variables: {
-        municipality: "Collins Chabane Local Municipality",
-      },
-    }
-  );
-
-  const { data: totalThulamelaMunicipalityApplications } = useQuery(
-    GET_TOTAL_MUNICIPALITY_APPLICATIONS_COUNT,
-    {
-      pollInterval: 4000,
-      variables: {
-        municipality: "Thulamela Local Municipality",
-      },
-    }
-  );
-
-  const { data, loading, error } = useQuery(GET_ALL_EXCEL_APPLICATIONS);
-
-  const excelData = data?.getAllExcelApplications || [];
-
-  console.log("Excel Data:", JSON.stringify(excelData));
-
-  const downloadExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(excelData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-    XLSX.writeFile(wb, "applications" + ".xlsx");
-  };
-
-  function handleDetails(type) {
-    setDataType(type);
-    setShowCard(true);
-  }
   return (
     <>
       <Modal show={show} fullscreen={true} onHide={() => setShow(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>{municipality}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Details municipality={municipality} />
-        </Modal.Body>
-      </Modal>
-
-      <Modal
-        show={showCard}
-        fullscreen={true}
-        onHide={() => setShowCard(false)}>
         <Modal.Header closeButton>
           <Modal.Title></Modal.Title>
         </Modal.Header>
@@ -142,7 +96,7 @@ const Home = () => {
                 <div className="col-xl-3 col-sm-6">
                   <div
                     className="card booking"
-                    onClick={() => handleDetails("all")}
+                    onClick={() => handleDetails("all", user.id)}
                     style={{ cursor: "pointer" }}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
@@ -155,7 +109,7 @@ const Home = () => {
                         <div className="ms-4">
                           <h2 className="mb-0 font-w600">
                             {totalApplications &&
-                              totalApplications.getAllUserApplicationsCount}
+                              totalApplications.getAllApplicationsCount}
                           </h2>
                           <p className="mb-0 text-nowrap">Total Requests</p>
                         </div>
@@ -166,7 +120,7 @@ const Home = () => {
                 <div className="col-xl-3 col-sm-6">
                   <div
                     className="card booking"
-                    onClick={() => handleDetails("approved")}
+                    onClick={() => handleDetails("pending", user.id)}
                     style={{ cursor: "pointer" }}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
@@ -178,9 +132,11 @@ const Home = () => {
                         </span>
                         <div className="ms-4">
                           <h2 className="mb-0 font-w600">
-                            {allApproved && allApproved.getAllApprovedCount}
+                            {" "}
+                            {latestApplications &&
+                              latestApplications.getLatestApplicationsCount}
                           </h2>
-                          <p className="mb-0 text-nowrap ">Total Approved</p>
+                          <p className="mb-0 text-nowrap ">Pending</p>
                         </div>
                       </div>
                     </div>
@@ -189,7 +145,7 @@ const Home = () => {
                 <div className="col-xl-3 col-sm-6">
                   <div
                     className="card booking"
-                    onClick={() => handleDetails("declined")}
+                    onClick={() => handleDetails("approved", user.id)}
                     style={{ cursor: "pointer" }}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
@@ -201,33 +157,34 @@ const Home = () => {
                         </span>
                         <div className="ms-4">
                           <h2 className="mb-0 font-w600">
-                            {allDeclined && allDeclined.getAllDeclinedCount}
+                            {successfulApplications &&
+                              successfulApplications.getSuccessfulApplicationsCount}
                           </h2>
-                          <p className="mb-0">Total Declined</p>
+                          <p className="mb-0">Approved</p>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-
                 <div className="col-xl-3 col-sm-6">
                   <div
                     className="card booking"
-                    style={{ backgroundColor: "#EEF5FC", cursor: "pointer" }}
-                    onClick={() => downloadExcel()}>
+                    onClick={() => handleDetails("declined", user.id)}
+                    style={{ cursor: "pointer" }}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
                           <i
-                            className="fas fa-file-excel"
+                            className="fas fa-exclamation"
                             style={{ fontSize: "22px", color: "#009BD7" }}
                           />
                         </span>
                         <div className="ms-4">
-                          <h2 className="mb-0 font-w600"></h2>
-                          <p className="mb-0" style={{ color: "#03BA27" }}>
-                            Download{" "}
-                          </p>
+                          <h2 className="mb-0 font-w600">
+                            {failedApplications &&
+                              failedApplications.getFailedApplicationsCount}
+                          </h2>
+                          <p className="mb-0">Rejected</p>
                         </div>
                       </div>
                     </div>
@@ -235,6 +192,7 @@ const Home = () => {
                 </div>
               </div>
             </div>
+
             <div className="col-xl-12">
               <div className="row">
                 <div className="col-xl-6">
@@ -246,15 +204,16 @@ const Home = () => {
                           backgroundColor: "#2AD45E",
                           cursor: "pointer",
                         }}
-                        onClick={() => handleDetails("approved")}>
+                        onClick={() => handleDetails("approved", user.id)}>
                         <div className="card-body">
                           <div className="d-flex align-items-end pb-4 justify-content-between">
                             <span className="fs-14 font-w500 text-white">
-                              Total Approvals
+                              Total Approved
                             </span>
                             <span className="fs-20 font-w600 text-white">
                               <span className="pe-2"></span>
-                              {successCount}
+                              {successfulApplications &&
+                                successfulApplications.getSuccessfulApplicationsCount}
                             </span>
                           </div>
                           <div className="progress default-progress h-auto">
@@ -278,20 +237,21 @@ const Home = () => {
                     </div>
                     <div className="col-xl-6 col-sm-6">
                       <div
-                        className="card"
+                        className="card declined-card"
                         style={{
                           backgroundColor: "#AD0900",
                           cursor: "pointer",
                         }}
-                        onClick={() => handleDetails("declined")}>
+                        onClick={() => handleDetails("declined", user.id)}>
                         <div className="card-body">
                           <div className="d-flex align-items-end pb-4 justify-content-between">
                             <span className="fs-14 font-w500 text-white">
-                              Declined
+                              Total Declined
                             </span>
                             <span className="fs-20 font-w600 text-white">
                               <span className="pe-2"></span>
-                              {failureCount}
+                              {failedApplications &&
+                                failedApplications.getFailedApplicationsCount}
                             </span>
                           </div>
                           <div className="progress default-progress h-auto">
@@ -311,88 +271,6 @@ const Home = () => {
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="row">
-        <div className="col-xl-12">
-          <div className="card">
-            <div className="card-header border-0 pb-0">
-              <h4 className="fs-20">Municipalities</h4>
-            </div>
-            <div className="card-body pt-0">{/*<LatestReview />*/}</div>
-            <div className="col-xl-12">
-              <div className="card">
-                <div className="card-body">
-                  <div className="row">
-                    <div
-                      className="col-xl-3 col-sm-3 col-6 mb-4 col-xxl-6"
-                      style={{ cursor: "pointer" }}
-                      onClick={() =>
-                        handleDetails("Makhado Local Municipality")
-                      }>
-                      <div className="text-center">
-                        <h3 className="fs-28 font-w600">
-                          {totalMakhadoMunicipalityApplications &&
-                            totalMakhadoMunicipalityApplications.getTotalMunicipalityApplicationsCount}
-                        </h3>
-                        <span className="fs-16">
-                          Makhado Local Municipality
-                        </span>
-                      </div>
-                    </div>
-                    <div
-                      className="col-xl-3 col-sm-3 col-6 mb-4 col-xxl-6"
-                      style={{ cursor: "pointer" }}
-                      onClick={() =>
-                        handleDetails("Thulamela Local Municipality")
-                      }>
-                      <div className="text-center">
-                        <h3 className="fs-28 font-w600">
-                          {totalThulamelaMunicipalityApplications &&
-                            totalThulamelaMunicipalityApplications.getTotalMunicipalityApplicationsCount}
-                        </h3>
-                        <span className="fs-16">
-                          Thulamela Local Municipality
-                        </span>
-                      </div>
-                    </div>
-                    <div
-                      className="col-xl-3 col-sm-3 col-6 mb-4 col-xxl-6"
-                      style={{ cursor: "pointer" }}
-                      onClick={() =>
-                        handleDetails("Collins Chabane Local Municipality")
-                      }>
-                      <div className="text-center">
-                        <h3 className="fs-28 font-w600">
-                          {totalColinsChabaneMunicipalityApplications &&
-                            totalColinsChabaneMunicipalityApplications.getTotalMunicipalityApplicationsCount}
-                        </h3>
-                        <span className="fs-16">
-                          Collins Chabane Local Municipality
-                        </span>
-                      </div>
-                    </div>
-                    <div
-                      className="col-xl-3 col-sm-3 col-6 mb-4 col-xxl-6"
-                      style={{ cursor: "pointer" }}
-                      onClick={() =>
-                        handleDetails("Musina Local Municipality")
-                      }>
-                      <div className="text-center">
-                        <h3 className="fs-28 font-w600">
-                          {totalMusinaMunicipalityApplications &&
-                            totalMusinaMunicipalityApplications.getTotalMunicipalityApplicationsCount}
-                        </h3>
-                        <span className="fs-16 wspace-no">
-                          Musina Local Municipality
-                        </span>
                       </div>
                     </div>
                   </div>

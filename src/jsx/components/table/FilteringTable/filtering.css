@@ -71,3 +71,15 @@
     font-size: 14px;
   }
 }
+
+.upload-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.upload-section {
+  justify-content: center;
+  align-items: center;
+  margin: 14px;
+}

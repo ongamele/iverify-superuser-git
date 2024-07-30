@@ -6,36 +6,53 @@ import {
   useFilters,
   usePagination,
 } from "react-table";
-import { GET_ALL_APPROVED_APPLICATIONS_SUPERUSER } from "../../../Graphql/Queries";
-import { GET_ALL_DECLINED_APPLICATIONS_SUPERUSER } from "../../../Graphql/Queries";
-import { GET_APPLICATIONS_SUPERUSER } from "../../../Graphql/Queries";
+import { GET_ALL_APPROVED_APPLICATIONS } from "../../../Graphql/Queries";
+import { GET_ALL_DECLINED_APPLICATIONS } from "../../../Graphql/Queries";
+import { GET_APPLICATIONS } from "../../../Graphql/Queries";
 import { COLUMNS } from "../table/FilteringTable/Columns";
 
 //Import Components
-const SelectedDetails = ({ dataType }) => {
+const SelectedDetails = ({ dataType, id }) => {
   const { loading: approvedLoading, data: approvedApplicationsData } = useQuery(
-    GET_ALL_APPROVED_APPLICATIONS_SUPERUSER
+    GET_ALL_APPROVED_APPLICATIONS,
+    {
+      variables: {
+        userId: id,
+      },
+    }
   );
 
   const { loading: declinedLoading, data: declinedApplicationsData } = useQuery(
-    GET_ALL_DECLINED_APPLICATIONS_SUPERUSER
+    GET_ALL_DECLINED_APPLICATIONS,
+    {
+      variables: {
+        userId: id,
+      },
+    }
   );
 
   const { loading: allApplicationsLoading, data: allApplicationsData } =
-    useQuery(GET_APPLICATIONS_SUPERUSER);
+    useQuery(GET_APPLICATIONS, {
+      variables: {
+        userId: id,
+      },
+    });
 
   var newData = [];
 
   if (allApplicationsData && dataType == "all") {
-    newData = allApplicationsData.getApplicationsSuperuser;
+    newData = allApplicationsData.getApplications;
   }
 
   if (declinedApplicationsData && dataType == "declined") {
-    newData = declinedApplicationsData.getAllDeclinedApplicationsSuperuser;
+    newData = declinedApplicationsData.getAllDeclinedApplications;
   }
 
   if (approvedApplicationsData && dataType == "approved") {
-    newData = approvedApplicationsData.getAllApprovedApplicationsSuperuser;
+    console.log(
+      JSON.stringify(approvedApplicationsData.getAllApprovedApplications)
+    );
+    newData = approvedApplicationsData.getAllApprovedApplications;
   }
   const columns = useMemo(() => COLUMNS, []);
   const data = useMemo(() => newData, []);

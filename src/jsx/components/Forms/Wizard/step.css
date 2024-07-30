@@ -1,0 +1,16 @@
+.consent-container {
+  text-align: center;
+}
+
+.point-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.point-list li {
+  text-align: left;
+}
+
+.consent-clause {
+  text-align: left;
+}
