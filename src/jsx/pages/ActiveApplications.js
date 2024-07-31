@@ -1,4 +1,4 @@
-rimport React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 
 import { GET_ACTIVE_INDIGENTS } from "../../Graphql/Queries";
 // Page titie
@@ -114,8 +114,6 @@ const ActiveApplications = () => {
             }
           }
 
-
-
           if (sheetName === "Makhado") {
             for (let i = 1; i < data.length; i++) {
               console.log(typeof convertToDate(data[i][1].toString()));
@@ -170,7 +168,6 @@ const ActiveApplications = () => {
             }
           }
 
-
           if (sheetName === "Thulamela2") {
             for (let i = 1; i < data.length; i++) {
               console.log(typeof convertToDate(data[i][1].toString()));
@@ -224,7 +221,6 @@ const ActiveApplications = () => {
               });
             }
           }
-
 
           if (sheetName === "Musina") {
             for (let i = 1; i < data.length; i++) {
