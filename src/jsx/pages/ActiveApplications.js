@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from "react";
+rimport React, { Fragment, useState, useEffect } from "react";
 
 import { GET_ACTIVE_INDIGENTS } from "../../Graphql/Queries";
 // Page titie
@@ -91,6 +91,172 @@ const ActiveApplications = () => {
                   suburb: "",
                   wardNumber: "",
                   municipality: "Collins Chabane",
+                  municipalAccountNumber: data[i][0].toString() || "",
+                  companyRegNumber: "",
+                  companyType: "",
+                  applicantIdNumber: data[i][3].toString() || "",
+                  applicantName: data[i][2] || "",
+                  applicantSurname: "",
+                  applicantPhoneNumber: null,
+                  applicantRelationship: "",
+                  spauseIdNumber: "",
+                  spauseName: "",
+                  spauseSurname: "",
+                  sassaNumber: "",
+                  ageRange: "",
+                  status: data[i][9] || "",
+                  deceased: data[i][6] || "",
+                  applicationDate: data[i][1]
+                    ? convertToDate(data[i][1].toString())
+                    : "",
+                },
+              });
+            }
+          }
+
+
+
+          if (sheetName === "Makhado") {
+            for (let i = 1; i < data.length; i++) {
+              console.log(typeof convertToDate(data[i][1].toString()));
+              await createApplication({
+                variables: {
+                  name: data[i][2] || "",
+                  userId: "",
+                  surname: "",
+                  idNumber: data[i][3].toString() || "",
+                  email: "",
+                  gender: "",
+                  phoneNumber: null,
+                  country: "South Africa",
+                  race: "",
+                  address: "",
+                  postalCode: "",
+                  householdHead: false,
+                  maritalStatus: "",
+                  dependents: false,
+                  idBook: "",
+                  bankStatement: "",
+                  affidavid: "",
+                  companyName: "",
+                  companyPhoneNumber: null,
+                  companyEmail: "",
+                  income: data[i][5].toString(),
+                  sourceOfIncome: "",
+                  standType: "",
+                  suburb: "",
+                  wardNumber: "",
+                  municipality: "Makhado",
+                  municipalAccountNumber: data[i][0].toString() || "",
+                  companyRegNumber: "",
+                  companyType: "",
+                  applicantIdNumber: data[i][3].toString() || "",
+                  applicantName: data[i][2] || "",
+                  applicantSurname: "",
+                  applicantPhoneNumber: null,
+                  applicantRelationship: "",
+                  spauseIdNumber: "",
+                  spauseName: "",
+                  spauseSurname: "",
+                  sassaNumber: "",
+                  ageRange: "",
+                  status: data[i][9] || "",
+                  deceased: data[i][6] || "",
+                  applicationDate: data[i][1]
+                    ? convertToDate(data[i][1].toString())
+                    : "",
+                },
+              });
+            }
+          }
+
+
+          if (sheetName === "Thulamela2") {
+            for (let i = 1; i < data.length; i++) {
+              console.log(typeof convertToDate(data[i][1].toString()));
+              await createApplication({
+                variables: {
+                  name: data[i][2] || "",
+                  userId: "",
+                  surname: "",
+                  idNumber: data[i][3].toString() || "",
+                  email: "",
+                  gender: "",
+                  phoneNumber: null,
+                  country: "South Africa",
+                  race: "",
+                  address: "",
+                  postalCode: "",
+                  householdHead: false,
+                  maritalStatus: "",
+                  dependents: false,
+                  idBook: "",
+                  bankStatement: "",
+                  affidavid: "",
+                  companyName: "",
+                  companyPhoneNumber: null,
+                  companyEmail: "",
+                  income: data[i][5].toString(),
+                  sourceOfIncome: "",
+                  standType: "",
+                  suburb: "",
+                  wardNumber: "",
+                  municipality: "Thulamela2",
+                  municipalAccountNumber: data[i][0].toString() || "",
+                  companyRegNumber: "",
+                  companyType: "",
+                  applicantIdNumber: data[i][3].toString() || "",
+                  applicantName: data[i][2] || "",
+                  applicantSurname: "",
+                  applicantPhoneNumber: null,
+                  applicantRelationship: "",
+                  spauseIdNumber: "",
+                  spauseName: "",
+                  spauseSurname: "",
+                  sassaNumber: "",
+                  ageRange: "",
+                  status: data[i][9] || "",
+                  deceased: data[i][6] || "",
+                  applicationDate: data[i][1]
+                    ? convertToDate(data[i][1].toString())
+                    : "",
+                },
+              });
+            }
+          }
+
+
+          if (sheetName === "Musina") {
+            for (let i = 1; i < data.length; i++) {
+              console.log(typeof convertToDate(data[i][1].toString()));
+              await createApplication({
+                variables: {
+                  name: data[i][2] || "",
+                  userId: "",
+                  surname: "",
+                  idNumber: data[i][3].toString() || "",
+                  email: "",
+                  gender: "",
+                  phoneNumber: null,
+                  country: "South Africa",
+                  race: "",
+                  address: "",
+                  postalCode: "",
+                  householdHead: false,
+                  maritalStatus: "",
+                  dependents: false,
+                  idBook: "",
+                  bankStatement: "",
+                  affidavid: "",
+                  companyName: "",
+                  companyPhoneNumber: null,
+                  companyEmail: "",
+                  income: data[i][5].toString(),
+                  sourceOfIncome: "",
+                  standType: "",
+                  suburb: "",
+                  wardNumber: "",
+                  municipality: "Musina",
                   municipalAccountNumber: data[i][0].toString() || "",
                   companyRegNumber: "",
                   companyType: "",
