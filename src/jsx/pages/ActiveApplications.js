@@ -161,17 +161,31 @@ const ActiveApplications = () => {
 
       if (filters.month) {
         const today = new Date();
-        const filterDate = new Date();
-        if (filters.month === "1 Month") {
-          filterDate.setMonth(filterDate.getMonth() - 1);
-        } else if (filters.month === "4 Months") {
-          filterDate.setMonth(filterDate.getMonth() - 4);
-        } else if (filters.month === "Year") {
-          filterDate.setFullYear(filterDate.getFullYear() - 1);
+        const currentYear = today.getFullYear();
+        const monthIndex = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ].indexOf(filters.month);
+
+        if (monthIndex !== -1) {
+          filtered = filtered.filter((item) => {
+            const itemDate = new Date(item.applicationDate);
+            return (
+              itemDate.getMonth() === monthIndex &&
+              itemDate.getFullYear() === currentYear
+            );
+          });
         }
-        filtered = filtered.filter(
-          (item) => new Date(item.applicationDate) >= filterDate
-        );
       }
 
       if (filters.status) {
@@ -334,7 +348,7 @@ const ActiveApplications = () => {
                             onChange={handleFilterChange}
                             className="form-control form-control-md">
                             <option value=""></option>
-                            <option value="Thulamela2">Thulamela2</option>
+                            <option value="Thulamela2">Thulamela</option>
                             <option value="Musina">Musina</option>
                             <option value="Collins Chabane">
                               Collins Chabane
@@ -352,14 +366,24 @@ const ActiveApplications = () => {
                             onChange={handleFilterChange}
                             className="form-control form-control-md">
                             <option value="" disabled>
-                              Period
+                              Select Month
                             </option>
-                            <option value="1 Month">1 Month</option>
-                            <option value="4 Months">4 Months</option>
-                            <option value="Year">Year</option>
+                            <option value="January">January</option>
+                            <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="April">April</option>
+                            <option value="May">May</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August">August</option>
+                            <option value="September">September</option>
+                            <option value="October">October</option>
+                            <option value="November">November</option>
+                            <option value="December">December</option>
                           </select>
                         </div>
                       </div>
+
                       <div className="col-lg-6 mb-2">
                         <div className="form-group mb-3">
                           <label className="text-label">Status</label>

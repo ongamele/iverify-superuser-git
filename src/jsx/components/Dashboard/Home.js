@@ -50,7 +50,7 @@ const Home = () => {
     return (fail * 100) / tot;
   }
 
-  function handleDetails(municipality) {
+  function handleMunicipalDetails(municipality) {
     setMunicipality(municipality);
     setShow(true);
   }
@@ -98,8 +98,6 @@ const Home = () => {
   const { data, loading, error } = useQuery(GET_ALL_EXCEL_APPLICATIONS);
 
   const excelData = data?.getAllExcelApplications || [];
-
-  console.log("Excel Data:", JSON.stringify(excelData));
 
   const downloadExcel = () => {
     const ws = XLSX.utils.json_to_sheet(excelData);
@@ -334,7 +332,7 @@ const Home = () => {
                     <div
                       className="col-xl-3 col-sm-3 col-6 mb-4 col-xxl-6"
                       style={{ cursor: "pointer" }}
-                      onClick={() => handleDetails("Makhado")}>
+                      onClick={() => handleMunicipalDetails("Makhado")}>
                       <div className="text-center">
                         <h3 className="fs-28 font-w600">
                           {totalMakhadoMunicipalityApplications &&
@@ -348,7 +346,7 @@ const Home = () => {
                     <div
                       className="col-xl-3 col-sm-3 col-6 mb-4 col-xxl-6"
                       style={{ cursor: "pointer" }}
-                      onClick={() => handleDetails("Thulamela2")}>
+                      onClick={() => handleMunicipalDetails("Thulamela2")}>
                       <div className="text-center">
                         <h3 className="fs-28 font-w600">
                           {totalThulamelaMunicipalityApplications &&
@@ -362,7 +360,7 @@ const Home = () => {
                     <div
                       className="col-xl-3 col-sm-3 col-6 mb-4 col-xxl-6"
                       style={{ cursor: "pointer" }}
-                      onClick={() => handleDetails("Collins Chabane")}>
+                      onClick={() => handleMunicipalDetails("Collins Chabane")}>
                       <div className="text-center">
                         <h3 className="fs-28 font-w600">
                           {totalColinsChabaneMunicipalityApplications &&
@@ -376,7 +374,7 @@ const Home = () => {
                     <div
                       className="col-xl-3 col-sm-3 col-6 mb-4 col-xxl-6"
                       style={{ cursor: "pointer" }}
-                      onClick={() => handleDetails("Musina")}>
+                      onClick={() => handleMunicipalDetails("Musina")}>
                       <div className="text-center">
                         <h3 className="fs-28 font-w600">
                           {totalMusinaMunicipalityApplications &&
