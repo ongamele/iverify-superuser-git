@@ -62,13 +62,12 @@ const ActiveApplications = () => {
 
           if (sheetName === "Collins Chabane") {
             for (let i = 1; i < data.length; i++) {
-              console.log(typeof convertToDate(data[i][1].toString()));
               await createApplication({
                 variables: {
-                  name: data[i][2] || "",
+                  name: data[i][2] ? data[i][2] : "",
                   userId: "",
                   surname: "",
-                  idNumber: data[i][3].toString() || "",
+                  idNumber: data[i][3] ? data[i][3].toString() : "",
                   email: "",
                   gender: "",
                   phoneNumber: null,
@@ -85,16 +84,18 @@ const ActiveApplications = () => {
                   companyName: "",
                   companyPhoneNumber: null,
                   companyEmail: "",
-                  income: data[i][5].toString(),
+                  income: data[i][5] ? data[i][5].toString() : "",
                   sourceOfIncome: "",
                   standType: "",
                   suburb: "",
                   wardNumber: "",
                   municipality: "Collins Chabane",
-                  municipalAccountNumber: data[i][0].toString() || "",
+                  municipalAccountNumber: data[i][0]
+                    ? data[i][0].toString()
+                    : "",
                   companyRegNumber: "",
                   companyType: "",
-                  applicantIdNumber: data[i][3].toString() || "",
+                  applicantIdNumber: data[i][3] ? data[i][3].toString() : "",
                   applicantName: data[i][2] || "",
                   applicantSurname: "",
                   applicantPhoneNumber: null,
@@ -104,8 +105,8 @@ const ActiveApplications = () => {
                   spauseSurname: "",
                   sassaNumber: "",
                   ageRange: "",
-                  status: data[i][9] || "",
-                  deceased: data[i][6] || "",
+                  status: data[i][9] ? data[i][9] : "",
+                  deceased: data[i][6] ? data[i][6] : "",
                   applicationDate: data[i][1]
                     ? convertToDate(data[i][1].toString())
                     : "",
@@ -301,7 +302,8 @@ const ActiveApplications = () => {
   const [filters, setFilters] = useState({
     deceased: "",
     municipality: "",
-    month: "",
+    fromDate: "",
+    toDate: "",
     status: "",
   });
 
@@ -321,37 +323,13 @@ const ActiveApplications = () => {
         );
       }
 
-      if (filters.month) {
-        const today = new Date();
-        const currentYear = today.getFullYear();
-        const monthIndex = [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December",
-        ].indexOf(filters.month);
-
-        if (monthIndex !== -1) {
-          filtered = filtered.filter((item) => {
-            const itemDate = new Date(item.applicationDate);
-            return (
-              itemDate.getMonth() === monthIndex &&
-              itemDate.getFullYear() === currentYear
-            );
-          });
-        }
-      }
-
-      if (filters.status) {
-        filtered = filtered.filter((item) => item.status === filters.status);
+      if (filters.fromDate && filters.toDate) {
+        const from = new Date(filters.fromDate);
+        const to = new Date(filters.toDate);
+        filtered = filtered.filter((item) => {
+          const applicationDate = new Date(item.applicationDate);
+          return applicationDate >= from && applicationDate <= to;
+        });
       }
 
       setFilteredData(filtered);
@@ -403,8 +381,10 @@ const ActiveApplications = () => {
         return "Deceased";
       case "municipality":
         return "Municipality";
-      case "month":
-        return "Month";
+      case "fromDate":
+        return "From Date";
+      case "toDate":
+        return "To Date";
       case "status":
         return "Status";
       default:
@@ -418,8 +398,10 @@ const ActiveApplications = () => {
         return "book";
       case "municipality":
         return "clipboard";
-      case "month":
-        return "calendar";
+      case "fromDate":
+        return "calendar-alt";
+      case "toDate":
+        return "calendar-alt";
       case "status":
         return "users";
       default:
@@ -482,26 +464,33 @@ const ActiveApplications = () => {
               </div>
 
               <div className="card-body">
-                <h4 className="card-title">Filters</h4>
                 <div>
                   <div className="card-body">
                     <h4 className="card-title">Filters</h4>
                     <div className="row">
-                      <div className="col-lg-6 mb-2">
+                      <div className="col-lg-3 mb-2">
                         <div className="form-group mb-3">
-                          <label className="text-label">Deceased</label>
+                          <label className="text-label">Filter by</label>
                           <select
                             name="deceased"
                             value={filters.deceased}
                             onChange={handleFilterChange}
                             className="form-control form-control-md">
                             <option value=""></option>
-                            <option value="N">Yes</option>
-                            <option value="Y">No</option>
+                            <option value="Y">Deceased</option>
+                            <option value="Passed - Indigent Application Successful">
+                              Approved
+                            </option>
+                            <option value="Failed - Indigent Application Unsuccessful">
+                              Declined
+                            </option>
+                            <option value="Failed - Indigent Application Unsuccessful">
+                              Invalid
+                            </option>
                           </select>
                         </div>
                       </div>
-                      <div className="col-lg-6 mb-2">
+                      <div className="col-lg-3 mb-2">
                         <div className="form-group mb-3">
                           <label className="text-label">Municipality</label>
                           <select
@@ -519,34 +508,30 @@ const ActiveApplications = () => {
                           </select>
                         </div>
                       </div>
-                      <div className="col-lg-6 mb-2">
-                        <div className="form-group mb-3">
-                          <label className="text-label">Month</label>
-                          <select
-                            name="month"
-                            value={filters.month}
-                            onChange={handleFilterChange}
-                            className="form-control form-control-md">
-                            <option value="" disabled>
-                              Select Month
-                            </option>
-                            <option value="January">January</option>
-                            <option value="February">February</option>
-                            <option value="March">March</option>
-                            <option value="April">April</option>
-                            <option value="May">May</option>
-                            <option value="June">June</option>
-                            <option value="July">July</option>
-                            <option value="August">August</option>
-                            <option value="September">September</option>
-                            <option value="October">October</option>
-                            <option value="November">November</option>
-                            <option value="December">December</option>
-                          </select>
-                        </div>
+                      <div className="col-md-3">
+                        <label htmlFor="fromDate-filter">From Date:</label>
+                        <input
+                          type="date"
+                          id="fromDate-filter"
+                          name="fromDate"
+                          className="form-control"
+                          value={filters.fromDate}
+                          onChange={handleFilterChange}
+                        />
+                      </div>
+                      <div className="col-md-3">
+                        <label htmlFor="toDate-filter">To Date:</label>
+                        <input
+                          type="date"
+                          id="toDate-filter"
+                          name="toDate"
+                          className="form-control"
+                          value={filters.toDate}
+                          onChange={handleFilterChange}
+                        />
                       </div>
 
-                      <div className="col-lg-6 mb-2">
+                      {/*<div className="col-lg-2 mb-2">
                         <div className="form-group mb-3">
                           <label className="text-label">Status</label>
                           <select
@@ -563,7 +548,7 @@ const ActiveApplications = () => {
                             </option>
                           </select>
                         </div>
-                      </div>
+                      </div>*/}
                     </div>
                   </div>
 

@@ -155,7 +155,7 @@ const Home = () => {
                             {totalApplications &&
                               totalApplications.getAllUserApplicationsCount}
                           </h2>
-                          <p className="mb-0 text-nowrap">Total Requests</p>
+                          <p className="mb-0 text-nowrap">Total Applications</p>
                         </div>
                       </div>
                     </div>
@@ -209,6 +209,120 @@ const Home = () => {
                 </div>
 
                 <div className="col-xl-3 col-sm-6">
+                  <div className="card booking" style={{ cursor: "pointer" }}>
+                    <div className="card-body">
+                      <div className="booking-status d-flex align-items-center">
+                        <span>
+                          <i
+                            className="fas fa-users"
+                            style={{ fontSize: "22px", color: "#009BD7" }}
+                          />
+                        </span>
+                        <div className="ms-4">
+                          <h2 className="mb-0 font-w600">4</h2>
+                          <p className="mb-0">Total Deceased</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-xl-3 col-sm-6">
+                  <div className="card booking" style={{ cursor: "pointer" }}>
+                    <div className="card-body">
+                      <div className="booking-status d-flex align-items-center">
+                        <span>
+                          <i
+                            className="fas fa-users"
+                            style={{ fontSize: "22px", color: "#009BD7" }}
+                          />
+                        </span>
+                        <div className="ms-4">
+                          <h2 className="mb-0 font-w600">44</h2>
+                          <p className="mb-0">Total Invalid</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-xl-3 col-sm-6">
+                  <div
+                    className="card"
+                    style={{
+                      backgroundColor: "#2AD45E",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handleDetails("approved")}>
+                    <div className="card-body">
+                      <div className="d-flex align-items-end pb-4 justify-content-between">
+                        <span className="fs-14 font-w500 text-white">
+                          Total Approvals
+                        </span>
+                        <span className="fs-20 font-w600 text-white">
+                          <span className="pe-2"></span>
+                          {successCount}
+                        </span>
+                      </div>
+                      <div className="progress default-progress h-auto">
+                        <div
+                          className="progress-bar bg-white progress-animated"
+                          style={{
+                            width: `${successPercentage(
+                              successCount,
+                              failureCount
+                            )}%`,
+                            height: "13px",
+                          }}>
+                          <span className="sr-only">
+                            {successPercentage(successCount, failureCount)}%
+                            Complete
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-xl-3 col-sm-6">
+                  <div
+                    className="card"
+                    style={{
+                      backgroundColor: "#AD0900",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handleDetails("declined")}>
+                    <div className="card-body">
+                      <div className="d-flex align-items-end pb-4 justify-content-between">
+                        <span className="fs-14 font-w500 text-white">
+                          Declined
+                        </span>
+                        <span className="fs-20 font-w600 text-white">
+                          <span className="pe-2"></span>
+                          {failureCount}
+                        </span>
+                      </div>
+                      <div className="progress default-progress h-auto">
+                        <div
+                          className="progress-bar bg-white progress-animated"
+                          style={{
+                            width: `${failurePercentage(
+                              successCount,
+                              failureCount
+                            )}%`,
+                            height: "13px",
+                          }}>
+                          <span className="sr-only">
+                            {failurePercentage(successCount, failureCount)}%
+                            Complete
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-xl-3 col-sm-6">
                   <div
                     className="card booking"
                     style={{ backgroundColor: "#EEF5FC", cursor: "pointer" }}
@@ -236,82 +350,7 @@ const Home = () => {
             <div className="col-xl-12">
               <div className="row">
                 <div className="col-xl-6">
-                  <div className="row">
-                    <div className="col-xl-6 col-sm-6">
-                      <div
-                        className="card"
-                        style={{
-                          backgroundColor: "#2AD45E",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => handleDetails("approved")}>
-                        <div className="card-body">
-                          <div className="d-flex align-items-end pb-4 justify-content-between">
-                            <span className="fs-14 font-w500 text-white">
-                              Total Approvals
-                            </span>
-                            <span className="fs-20 font-w600 text-white">
-                              <span className="pe-2"></span>
-                              {successCount}
-                            </span>
-                          </div>
-                          <div className="progress default-progress h-auto">
-                            <div
-                              className="progress-bar bg-white progress-animated"
-                              style={{
-                                width: `${successPercentage(
-                                  successCount,
-                                  failureCount
-                                )}%`,
-                                height: "13px",
-                              }}>
-                              <span className="sr-only">
-                                {successPercentage(successCount, failureCount)}%
-                                Complete
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-6 col-sm-6">
-                      <div
-                        className="card"
-                        style={{
-                          backgroundColor: "#AD0900",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => handleDetails("declined")}>
-                        <div className="card-body">
-                          <div className="d-flex align-items-end pb-4 justify-content-between">
-                            <span className="fs-14 font-w500 text-white">
-                              Declined
-                            </span>
-                            <span className="fs-20 font-w600 text-white">
-                              <span className="pe-2"></span>
-                              {failureCount}
-                            </span>
-                          </div>
-                          <div className="progress default-progress h-auto">
-                            <div
-                              className="progress-bar bg-white progress-animated"
-                              style={{
-                                width: `${failurePercentage(
-                                  successCount,
-                                  failureCount
-                                )}%`,
-                                height: "13px",
-                              }}>
-                              <span className="sr-only">
-                                {failurePercentage(successCount, failureCount)}%
-                                Complete
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <div className="row"></div>
                 </div>
               </div>
             </div>
