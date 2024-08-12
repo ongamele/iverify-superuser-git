@@ -72,22 +72,22 @@ const Details = ({ municipality }) => {
 
     return formattedDate;
   };
-
   const [filters, setFilters] = useState({
-    deceased: "",
+    combinedStatus: "",
     municipality: "",
     fromDate: "",
     toDate: "",
-    status: "",
   });
 
   useEffect(() => {
     if (data) {
       let filtered = data.getActiveIndigents;
 
-      if (filters.deceased) {
+      if (filters.combinedStatus) {
         filtered = filtered.filter(
-          (item) => item.deceased === filters.deceased
+          (item) =>
+            item.deceased === filters.combinedStatus ||
+            item.status === filters.combinedStatus
         );
       }
 
@@ -107,21 +107,13 @@ const Details = ({ municipality }) => {
       }
 
       setFilteredData(filtered);
-
-      // Update active filters
-      const active = Object.entries(filters)
-        .filter(([key, value]) => value)
-        .map(([key]) => key);
-      setActiveFilters(active);
+      setActiveFilters(Object.keys(filters).filter((key) => filters[key]));
     }
   }, [data, filters]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: value,
-    }));
+    setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
   };
 
   // Helper functions to get label and icon for each filter
@@ -383,8 +375,8 @@ const Details = ({ municipality }) => {
                           <div className="form-group mb-3">
                             <label className="text-label">Filter by</label>
                             <select
-                              name="deceased"
-                              value={filters.deceased}
+                              name="combinedStatus"
+                              value={filters.combinedStatus}
                               onChange={handleFilterChange}
                               className="form-control form-control-md">
                               <option value=""></option>
@@ -395,9 +387,7 @@ const Details = ({ municipality }) => {
                               <option value="Failed - Indigent Application Unsuccessful">
                                 Declined
                               </option>
-                              <option value="Failed - Indigent Application Unsuccessful">
-                                Invalid
-                              </option>
+                              <option value="Invalid">Invalid</option>
                             </select>
                           </div>
                         </div>
@@ -447,37 +437,33 @@ const Details = ({ municipality }) => {
                     <div className="row">
                       <div className="col-xl-12">
                         <div className="row">
-                          {activeFilters.map((filter) => (
-                            <div className="col-xl-3 col-sm-6" key={filter}>
-                              <div
-                                className="card booking"
-                                style={{ cursor: "pointer" }}>
-                                <div className="card-body">
-                                  <div className="booking-status d-flex align-items-center">
-                                    <span>
-                                      <i
-                                        className={`fas fa-${getIconForFilter(
-                                          filter
-                                        )}`}
-                                        style={{
-                                          fontSize: "22px",
-                                          color: "#009BD7",
-                                        }}
-                                      />
-                                    </span>
-                                    <div className="ms-4">
-                                      <h2 className="mb-0 font-w600">
-                                        {filteredData.length}
-                                      </h2>
-                                      <p className="mb-0 text-nowrap">
-                                        {getLabelForFilter(filter)}
-                                      </p>
-                                    </div>
+                          <div className="col-xl-3 col-sm-6">
+                            <div
+                              className="card booking"
+                              style={{ cursor: "pointer" }}>
+                              <div className="card-body">
+                                <div className="booking-status d-flex align-items-center">
+                                  <span>
+                                    <i
+                                      className="fas fa-clipboard"
+                                      style={{
+                                        fontSize: "22px",
+                                        color: "#009BD7",
+                                      }}
+                                    />
+                                  </span>
+                                  <div className="ms-4">
+                                    <h2 className="mb-0 font-w600">
+                                      {filteredData.length}
+                                    </h2>
+                                    <p className="mb-0 text-nowrap">
+                                      Applicants
+                                    </p>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                          ))}
+                          </div>
                         </div>
                       </div>
                     </div>
