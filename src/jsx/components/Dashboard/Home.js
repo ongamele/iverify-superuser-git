@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
+import Chart from "react-apexcharts";
 import { Link } from "react-router-dom";
 import * as XLSX from "xlsx";
 import Modal from "react-bootstrap/Modal";
@@ -110,6 +111,94 @@ const Home = () => {
     setDataType(type);
     setShowCard(true);
   }
+
+  const MunicipalityChart = ({ data, title }) => {
+    const chartOptions = {
+      chart: {
+        type: "bar",
+        height: 350,
+        distributed: true,
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          columnWidth: "55%",
+          endingShape: "rounded",
+        },
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      stroke: {
+        show: true,
+        width: 2,
+        colors: ["transparent"],
+      },
+      xaxis: {
+        categories: data.map((item) => item.name),
+      },
+      yaxis: {
+        title: {
+          text: "Applications Count",
+        },
+      },
+      fill: {
+        opacity: 1,
+      },
+      tooltip: {
+        y: {
+          formatter: (val) => val,
+        },
+      },
+      title: {
+        text: title,
+        align: "center",
+      },
+    };
+
+    const chartSeries = [
+      {
+        name: "Applications",
+        data: data.map((item) => item.count),
+      },
+    ];
+
+    return (
+      <Chart
+        options={chartOptions}
+        series={chartSeries}
+        type="bar"
+        height={350}
+      />
+    );
+  };
+
+  const municipalitiesData = [
+    {
+      name: "Makhado",
+      count:
+        totalMakhadoMunicipalityApplications?.getTotalMunicipalityApplicationsCount ||
+        0,
+    },
+    {
+      name: "Thulamela",
+      count:
+        totalThulamelaMunicipalityApplications?.getTotalMunicipalityApplicationsCount ||
+        0,
+    },
+    {
+      name: "Collins Chabane",
+      count:
+        totalColinsChabaneMunicipalityApplications?.getTotalMunicipalityApplicationsCount ||
+        0,
+    },
+    {
+      name: "Musina",
+      count:
+        totalMusinaMunicipalityApplications?.getTotalMunicipalityApplicationsCount ||
+        0,
+    },
+  ];
   return (
     <>
       <Modal show={show} fullscreen={true} onHide={() => setShow(false)}>
@@ -140,8 +229,7 @@ const Home = () => {
                 <div className="col-xl-3 col-sm-6">
                   <div
                     className="card booking"
-                    onClick={() => handleDetails("all")}
-                    style={{ cursor: "pointer" }}>
+                    style={{ cursor: "pointer", backgroundColor: "#A2A6F6" }}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -164,8 +252,7 @@ const Home = () => {
                 <div className="col-xl-3 col-sm-6">
                   <div
                     className="card booking"
-                    onClick={() => handleDetails("approved")}
-                    style={{ cursor: "pointer" }}>
+                    style={{ cursor: "pointer", backgroundColor: "#FF5271" }}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -187,8 +274,7 @@ const Home = () => {
                 <div className="col-xl-3 col-sm-6">
                   <div
                     className="card booking"
-                    onClick={() => handleDetails("declined")}
-                    style={{ cursor: "pointer" }}>
+                    style={{ cursor: "pointer", backgroundColor: "#FFEB66" }}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -209,7 +295,9 @@ const Home = () => {
                 </div>
 
                 <div className="col-xl-3 col-sm-6">
-                  <div className="card booking" style={{ cursor: "pointer" }}>
+                  <div
+                    className="card booking"
+                    style={{ cursor: "pointer", backgroundColor: "#76F4B9" }}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -228,7 +316,9 @@ const Home = () => {
                 </div>
 
                 <div className="col-xl-3 col-sm-6">
-                  <div className="card booking" style={{ cursor: "pointer" }}>
+                  <div
+                    className="card booking"
+                    style={{ cursor: "pointer", backgroundColor: "#F4BA76" }}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -240,82 +330,6 @@ const Home = () => {
                         <div className="ms-4">
                           <h2 className="mb-0 font-w600">44</h2>
                           <p className="mb-0">Total Invalid</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-xl-3 col-sm-6">
-                  <div
-                    className="card"
-                    style={{
-                      backgroundColor: "#2AD45E",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => handleDetails("approved")}>
-                    <div className="card-body">
-                      <div className="d-flex align-items-end pb-4 justify-content-between">
-                        <span className="fs-14 font-w500 text-white">
-                          Total Approvals
-                        </span>
-                        <span className="fs-20 font-w600 text-white">
-                          <span className="pe-2"></span>
-                          {successCount}
-                        </span>
-                      </div>
-                      <div className="progress default-progress h-auto">
-                        <div
-                          className="progress-bar bg-white progress-animated"
-                          style={{
-                            width: `${successPercentage(
-                              successCount,
-                              failureCount
-                            )}%`,
-                            height: "13px",
-                          }}>
-                          <span className="sr-only">
-                            {successPercentage(successCount, failureCount)}%
-                            Complete
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-xl-3 col-sm-6">
-                  <div
-                    className="card"
-                    style={{
-                      backgroundColor: "#AD0900",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => handleDetails("declined")}>
-                    <div className="card-body">
-                      <div className="d-flex align-items-end pb-4 justify-content-between">
-                        <span className="fs-14 font-w500 text-white">
-                          Declined
-                        </span>
-                        <span className="fs-20 font-w600 text-white">
-                          <span className="pe-2"></span>
-                          {failureCount}
-                        </span>
-                      </div>
-                      <div className="progress default-progress h-auto">
-                        <div
-                          className="progress-bar bg-white progress-animated"
-                          style={{
-                            width: `${failurePercentage(
-                              successCount,
-                              failureCount
-                            )}%`,
-                            height: "13px",
-                          }}>
-                          <span className="sr-only">
-                            {failurePercentage(successCount, failureCount)}%
-                            Complete
-                          </span>
                         </div>
                       </div>
                     </div>
@@ -427,6 +441,21 @@ const Home = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-xl-12">
+          <div className="card">
+            <div className="card-header border-0 pb-0">
+              <h4 className="fs-20">Municipalities</h4>
+            </div>
+            <div className="card-body pt-0">
+              <MunicipalityChart
+                data={municipalitiesData}
+                title="Municipalities Applications Count"
+              />
             </div>
           </div>
         </div>

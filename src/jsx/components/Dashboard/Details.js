@@ -159,7 +159,9 @@ const Details = ({ municipality }) => {
             <div className="col-xl-12">
               <div className="row">
                 <div className="col-xl-3 col-sm-6">
-                  <div className="card booking" style={{ cursor: "pointer" }}>
+                  <div
+                    className="card booking"
+                    style={{ cursor: "pointer", backgroundColor: "#A2A6F6" }}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -179,7 +181,9 @@ const Details = ({ municipality }) => {
                   </div>
                 </div>
                 <div className="col-xl-3 col-sm-6">
-                  <div className="card booking" style={{ cursor: "pointer" }}>
+                  <div
+                    className="card booking"
+                    style={{ cursor: "pointer", backgroundColor: "#FF5271" }}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -199,7 +203,9 @@ const Details = ({ municipality }) => {
                   </div>
                 </div>
                 <div className="col-xl-3 col-sm-6">
-                  <div className="card booking" style={{ cursor: "pointer" }}>
+                  <div
+                    className="card booking"
+                    style={{ cursor: "pointer", backgroundColor: "#FFEB66" }}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -220,7 +226,9 @@ const Details = ({ municipality }) => {
                 </div>
 
                 <div className="col-xl-3 col-sm-6">
-                  <div className="card booking" style={{ cursor: "pointer" }}>
+                  <div
+                    className="card booking"
+                    style={{ cursor: "pointer", backgroundColor: "#76F4B9" }}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -239,7 +247,9 @@ const Details = ({ municipality }) => {
                 </div>
 
                 <div className="col-xl-3 col-sm-6">
-                  <div className="card booking" style={{ cursor: "pointer" }}>
+                  <div
+                    className="card booking"
+                    style={{ cursor: "pointer", backgroundColor: "#F4BA76" }}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -257,85 +267,6 @@ const Details = ({ municipality }) => {
                   </div>
                 </div>
 
-                <div className="col-xl-3 col-sm-6">
-                  <div
-                    className="card"
-                    style={{
-                      backgroundColor: "#2AD45E",
-                      cursor: "pointer",
-                    }}>
-                    <div className="card-body">
-                      <div className="d-flex align-items-end pb-4 justify-content-between">
-                        <span className="fs-14 font-w500 text-white">
-                          Total Approvals
-                        </span>
-                        <span className="fs-20 font-w600 text-white">
-                          <span className="pe-2"></span>
-                          {successfulApplications}
-                        </span>
-                      </div>
-                      <div className="progress default-progress h-auto">
-                        <div
-                          className="progress-bar bg-white progress-animated"
-                          style={{
-                            width: `${successPercentage(
-                              successfulApplications,
-                              failedApplications
-                            )}%`,
-                            height: "13px",
-                          }}>
-                          <span className="sr-only">
-                            {successPercentage(
-                              successfulApplications,
-                              failedApplications
-                            )}
-                            % Complete
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-xl-3 col-sm-6">
-                  <div
-                    className="card"
-                    style={{
-                      backgroundColor: "#AD0900",
-                      cursor: "pointer",
-                    }}>
-                    <div className="card-body">
-                      <div className="d-flex align-items-end pb-4 justify-content-between">
-                        <span className="fs-14 font-w500 text-white">
-                          Declined
-                        </span>
-                        <span className="fs-20 font-w600 text-white">
-                          <span className="pe-2"></span>
-                          {failedApplications}
-                        </span>
-                      </div>
-                      <div className="progress default-progress h-auto">
-                        <div
-                          className="progress-bar bg-white progress-animated"
-                          style={{
-                            width: `${failurePercentage(
-                              successfulApplications,
-                              failedApplications
-                            )}%`,
-                            height: "13px",
-                          }}>
-                          <span className="sr-only">
-                            {failurePercentage(
-                              successfulApplications,
-                              failedApplications
-                            )}
-                            % Complete
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
                 <div className="col-xl-3 col-sm-6">
                   <div
                     className="card booking"
@@ -391,7 +322,7 @@ const Details = ({ municipality }) => {
                             </select>
                           </div>
                         </div>
-                        <div className="col-lg-3 mb-2">
+                        {/*<div className="col-lg-3 mb-2">
                           <div className="form-group mb-3">
                             <label className="text-label">Municipality</label>
                             <select
@@ -408,7 +339,7 @@ const Details = ({ municipality }) => {
                               <option value="Makhado">Makhado</option>
                             </select>
                           </div>
-                        </div>
+                        </div>*/}
                         <div className="col-md-3">
                           <label htmlFor="fromDate-filter">From Date:</label>
                           <input
