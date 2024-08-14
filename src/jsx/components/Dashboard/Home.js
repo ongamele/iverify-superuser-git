@@ -229,7 +229,8 @@ const Home = () => {
                 <div className="col-xl-3 col-sm-6">
                   <div
                     className="card booking"
-                    style={{ cursor: "pointer", backgroundColor: "#A2A6F6" }}>
+                    style={{ cursor: "pointer", backgroundColor: "#A2A6F6" }}
+                    onClick={() => handleDetails("all")}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -252,7 +253,8 @@ const Home = () => {
                 <div className="col-xl-3 col-sm-6">
                   <div
                     className="card booking"
-                    style={{ cursor: "pointer", backgroundColor: "#FF5271" }}>
+                    style={{ cursor: "pointer", backgroundColor: "#FF5271" }}
+                    onClick={() => handleDetails("approved")}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -274,7 +276,8 @@ const Home = () => {
                 <div className="col-xl-3 col-sm-6">
                   <div
                     className="card booking"
-                    style={{ cursor: "pointer", backgroundColor: "#FFEB66" }}>
+                    style={{ cursor: "pointer", backgroundColor: "#FFEB66" }}
+                    onClick={() => handleDetails("declined")}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -297,7 +300,8 @@ const Home = () => {
                 <div className="col-xl-3 col-sm-6">
                   <div
                     className="card booking"
-                    style={{ cursor: "pointer", backgroundColor: "#76F4B9" }}>
+                    style={{ cursor: "pointer", backgroundColor: "#76F4B9" }}
+                    onClick={() => handleDetails("deceased")}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -318,7 +322,8 @@ const Home = () => {
                 <div className="col-xl-3 col-sm-6">
                   <div
                     className="card booking"
-                    style={{ cursor: "pointer", backgroundColor: "#F4BA76" }}>
+                    style={{ cursor: "pointer", backgroundColor: "#F4BA76" }}
+                    onClick={() => handleDetails("invalid")}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -373,70 +378,65 @@ const Home = () => {
       </div>
       <div className="row">
         <div className="col-xl-12">
-          <div className="card">
-            <div className="card-header border-0 pb-0">
-              <h4 className="fs-20">Municipalities</h4>
-            </div>
-            <div className="card-body pt-0">{/*<LatestReview />*/}</div>
-            <div className="col-xl-12">
-              <div className="card">
-                <div className="card-body">
-                  <div className="row">
-                    <div
-                      className="col-xl-3 col-sm-3 col-6 mb-4 col-xxl-6"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => handleMunicipalDetails("Makhado")}>
-                      <div className="text-center">
-                        <h3 className="fs-28 font-w600">
-                          {totalMakhadoMunicipalityApplications &&
-                            totalMakhadoMunicipalityApplications.getTotalMunicipalityApplicationsCount}
-                        </h3>
-                        <span className="fs-16">
-                          Makhado Local Municipality
-                        </span>
-                      </div>
+          <div className="col-xl-12">
+            <div className="card">
+              <div className="card-header border-0 pb-0">
+                <h4 className="fs-20">Municipalities</h4>
+              </div>
+              <div className="card-body">
+                <div className="row">
+                  <div
+                    className="col-xl-3 col-sm-3 col-6 mb-4 col-xxl-6"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleMunicipalDetails("Makhado")}>
+                    <div className="text-center">
+                      <h3 className="fs-28 font-w600">
+                        {totalMakhadoMunicipalityApplications &&
+                          totalMakhadoMunicipalityApplications.getTotalMunicipalityApplicationsCount}
+                      </h3>
+                      <span className="fs-16">Makhado Local Municipality</span>
                     </div>
-                    <div
-                      className="col-xl-3 col-sm-3 col-6 mb-4 col-xxl-6"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => handleMunicipalDetails("Thulamela2")}>
-                      <div className="text-center">
-                        <h3 className="fs-28 font-w600">
-                          {totalThulamelaMunicipalityApplications &&
-                            totalThulamelaMunicipalityApplications.getTotalMunicipalityApplicationsCount}
-                        </h3>
-                        <span className="fs-16">
-                          Thulamela Local Municipality
-                        </span>
-                      </div>
+                  </div>
+                  <div
+                    className="col-xl-3 col-sm-3 col-6 mb-4 col-xxl-6"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleMunicipalDetails("Thulamela2")}>
+                    <div className="text-center">
+                      <h3 className="fs-28 font-w600">
+                        {totalThulamelaMunicipalityApplications &&
+                          totalThulamelaMunicipalityApplications.getTotalMunicipalityApplicationsCount}
+                      </h3>
+                      <span className="fs-16">
+                        Thulamela Local Municipality
+                      </span>
                     </div>
-                    <div
-                      className="col-xl-3 col-sm-3 col-6 mb-4 col-xxl-6"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => handleMunicipalDetails("Collins Chabane")}>
-                      <div className="text-center">
-                        <h3 className="fs-28 font-w600">
-                          {totalColinsChabaneMunicipalityApplications &&
-                            totalColinsChabaneMunicipalityApplications.getTotalMunicipalityApplicationsCount}
-                        </h3>
-                        <span className="fs-16">
-                          Collins Chabane Local Municipality
-                        </span>
-                      </div>
+                  </div>
+                  <div
+                    className="col-xl-3 col-sm-3 col-6 mb-4 col-xxl-6"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleMunicipalDetails("Collins Chabane")}>
+                    <div className="text-center">
+                      <h3 className="fs-28 font-w600">
+                        {totalColinsChabaneMunicipalityApplications &&
+                          totalColinsChabaneMunicipalityApplications.getTotalMunicipalityApplicationsCount}
+                      </h3>
+                      <span className="fs-16">
+                        Collins Chabane Local Municipality
+                      </span>
                     </div>
-                    <div
-                      className="col-xl-3 col-sm-3 col-6 mb-4 col-xxl-6"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => handleMunicipalDetails("Musina")}>
-                      <div className="text-center">
-                        <h3 className="fs-28 font-w600">
-                          {totalMusinaMunicipalityApplications &&
-                            totalMusinaMunicipalityApplications.getTotalMunicipalityApplicationsCount}
-                        </h3>
-                        <span className="fs-16 wspace-no">
-                          Musina Local Municipality
-                        </span>
-                      </div>
+                  </div>
+                  <div
+                    className="col-xl-3 col-sm-3 col-6 mb-4 col-xxl-6"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleMunicipalDetails("Musina")}>
+                    <div className="text-center">
+                      <h3 className="fs-28 font-w600">
+                        {totalMusinaMunicipalityApplications &&
+                          totalMusinaMunicipalityApplications.getTotalMunicipalityApplicationsCount}
+                      </h3>
+                      <span className="fs-16 wspace-no">
+                        Musina Local Municipality
+                      </span>
                     </div>
                   </div>
                 </div>

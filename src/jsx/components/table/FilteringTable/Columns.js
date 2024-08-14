@@ -2,9 +2,9 @@ import { format } from "date-fns";
 import { ColumnFilter } from "./ColumnFilter";
 export const COLUMNS = [
   {
-    Header: "Id",
-    Footer: "Id",
-    accessor: "id",
+    Header: "ID Number",
+    Footer: "ID Number",
+    accessor: "idNumber",
     Filter: ColumnFilter,
     //disableFilters: true,
   },
@@ -27,9 +27,9 @@ export const COLUMNS = [
     Filter: ColumnFilter,
   },
   {
-    Header: "Address",
-    Footer: "Address",
-    accessor: "address",
+    Header: "Municipality",
+    Footer: "Municipality",
+    accessor: "municipality",
 
     Filter: ColumnFilter,
   },

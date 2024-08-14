@@ -19,7 +19,6 @@ export const GET_USERS = gql`
 export const GET_APPLICATIONS = gql`
   query getApplications($userId: String!) {
     getApplications(userId: $userId) {
-      id
       userId
       name
       surname
@@ -28,15 +27,40 @@ export const GET_APPLICATIONS = gql`
       address
       postalCode
       country
-      municipalAcc
       race
+      idNumber
       houseHoldHead
       maritalStatus
       dependents
       bankStatement
       idBook
       affidavid
+      gender
+      companyName
+      companyPhoneNumber
+      companyEmail
+      income
+      sourceOfIncome
+      standType
+      suburb
+      wardNumber
+      municipality
+      municipalAccountNumber
+      companyRegNumber
+      companyType
+      applicantIdNumber
+      applicantName
+      applicantSurname
+      applicantPhoneNumber
+      applicantRelationship
+      spauseIdNumber
+      spauseName
+      spauseSurname
+      sassaNumber
+      ageRange
       status
+      deceased
+      applicationDate
       createdAt
     }
   }
@@ -45,27 +69,48 @@ export const GET_APPLICATIONS = gql`
 export const GET_APPLICATIONS_SUPERUSER = gql`
   query getApplicationsSuperuser {
     getApplicationsSuperuser {
-      id
       userId
       name
       surname
       email
       phoneNumber
-      idNumber
       address
       postalCode
       country
-      municipality
-      municipalAccountNumber
       race
+      idNumber
       houseHoldHead
       maritalStatus
       dependents
       bankStatement
       idBook
       affidavid
+      gender
+      companyName
+      companyPhoneNumber
+      companyEmail
+      income
+      sourceOfIncome
+      standType
+      suburb
+      wardNumber
+      municipality
+      municipalAccountNumber
+      companyRegNumber
+      companyType
+      applicantIdNumber
+      applicantName
+      applicantSurname
+      applicantPhoneNumber
+      applicantRelationship
+      spauseIdNumber
+      spauseName
+      spauseSurname
+      sassaNumber
+      ageRange
       status
-      reason
+      deceased
+      applicationDate
       createdAt
     }
   }
