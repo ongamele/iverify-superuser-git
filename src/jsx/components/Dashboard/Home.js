@@ -98,7 +98,14 @@ const Home = () => {
 
   const { data, loading, error } = useQuery(GET_ALL_EXCEL_APPLICATIONS);
 
-  const excelData = data?.getAllExcelApplications || [];
+  const originalData = data?.getAllExcelApplications || [];
+  const excelData = originalData.map((item) => ({
+    ID_NUMBER: item.idNumber,
+    "MUNICILAP NAME": item.municipality,
+    APPROVED_YN: item.status,
+    INCOME: item.income,
+    APPLICACATION_DATE_YYYYMMDD: item.applicationDate,
+  }));
 
   const downloadExcel = () => {
     const ws = XLSX.utils.json_to_sheet(excelData);
