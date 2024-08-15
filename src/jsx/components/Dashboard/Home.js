@@ -1,21 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import Chart from "react-apexcharts";
-import { Link } from "react-router-dom";
 import * as XLSX from "xlsx";
 import Modal from "react-bootstrap/Modal";
 //Import Components
 import { ThemeContext } from "../../../context/ThemeContext";
-import { AuthContext } from "../context-auth/auth";
 import Details from "./Details";
 import SelectedDetails from "./SelectedDetails";
-import { GET_ALL_USER_APPLICATIONS } from "../../../Graphql/Queries";
-import { GET_ALL_APPROVED } from "../../../Graphql/Queries";
-import { GET_ALL_DECLINED } from "../../../Graphql/Queries";
-import { GET_TOTAL_MUNICIPALITY_APPLICATIONS_COUNT } from "../../../Graphql/Queries";
-import { GET_ALL_EXCEL_APPLICATIONS } from "../../../Graphql/Queries";
+import { GET_ACTIVE_INDIGENTS } from "../../../Graphql/Queries";
 const Home = () => {
-  const { user } = useContext(AuthContext);
   const [show, setShow] = useState(false);
   const [showCard, setShowCard] = useState(false);
   const [id, setId] = useState(false);
@@ -26,79 +19,45 @@ const Home = () => {
     changeBackground({ value: "light", label: "Light" });
   }, []);
 
-  const { data: totalApplications } = useQuery(GET_ALL_USER_APPLICATIONS);
-  const { data: allApproved } = useQuery(GET_ALL_APPROVED);
-  const { data: allDeclined } = useQuery(GET_ALL_DECLINED);
+  const { data: allApplications } = useQuery(GET_ACTIVE_INDIGENTS, {
+    variables: {
+      municipality: municipality,
+    },
+  });
 
-  var successCount = 0;
-  var failureCount = 0;
+  const allApplicationsCount = allApplications?.getActiveIndigents.length;
+  const passedApplications = allApplications?.getActiveIndigents.filter(
+    (record) => record.status === "Passed - Indigent Application Successful"
+  ).length;
+  const failedApplications = allApplications?.getActiveIndigents.filter(
+    (record) => record.status === "Failed - Indigent Application Unsuccessful"
+  ).length;
+  const deceasedApplications = allApplications?.getActiveIndigents.filter(
+    (record) => record.status === "deceased"
+  ).length;
+  const invalidApplications = allApplications?.getActiveIndigents.filter(
+    (record) => record.status === "invalid"
+  ).length;
 
-  if (allDeclined && allDeclined.getAllDeclinedCount) {
-    failureCount = allDeclined.getAllDeclinedCount;
-  }
-
-  if (allApproved && allApproved.getAllApprovedCount) {
-    successCount = allApproved.getAllApprovedCount;
-  }
-
-  function successPercentage(success, fail) {
-    var tot = fail + success;
-    return (success * 100) / tot;
-  }
-
-  function failurePercentage(success, fail) {
-    var tot = fail + success;
-    return (fail * 100) / tot;
-  }
+  const makhadoCount = allApplications?.getActiveIndigents.filter(
+    (record) => record.municipality === "Makhado"
+  ).length;
+  const thulamelaCount = allApplications?.getActiveIndigents.filter(
+    (record) => record.municipality === "Thulamela2"
+  ).length;
+  const collinsChabaneCount = allApplications?.getActiveIndigents.filter(
+    (record) => record.municipality === "Collins Chabane"
+  ).length;
+  const musinaCount = allApplications?.getActiveIndigents.filter(
+    (record) => record.municipality === "Musina"
+  ).length;
 
   function handleMunicipalDetails(municipality) {
     setMunicipality(municipality);
     setShow(true);
   }
 
-  const { data: totalMusinaMunicipalityApplications } = useQuery(
-    GET_TOTAL_MUNICIPALITY_APPLICATIONS_COUNT,
-    {
-      pollInterval: 4000,
-      variables: {
-        municipality: "Musina",
-      },
-    }
-  );
-
-  const { data: totalMakhadoMunicipalityApplications } = useQuery(
-    GET_TOTAL_MUNICIPALITY_APPLICATIONS_COUNT,
-    {
-      pollInterval: 4000,
-      variables: {
-        municipality: "Makhado",
-      },
-    }
-  );
-
-  const { data: totalColinsChabaneMunicipalityApplications } = useQuery(
-    GET_TOTAL_MUNICIPALITY_APPLICATIONS_COUNT,
-    {
-      pollInterval: 4000,
-      variables: {
-        municipality: "Collins Chabane",
-      },
-    }
-  );
-
-  const { data: totalThulamelaMunicipalityApplications } = useQuery(
-    GET_TOTAL_MUNICIPALITY_APPLICATIONS_COUNT,
-    {
-      pollInterval: 4000,
-      variables: {
-        municipality: "Thulamela2",
-      },
-    }
-  );
-
-  const { data, loading, error } = useQuery(GET_ALL_EXCEL_APPLICATIONS);
-
-  const originalData = data?.getAllExcelApplications || [];
+  const originalData = allApplications?.getActiveIndigents || [];
   const excelData = originalData.map((item) => ({
     ID_NUMBER: item.idNumber,
     "MUNICILAP NAME": item.municipality,
@@ -183,27 +142,19 @@ const Home = () => {
   const municipalitiesData = [
     {
       name: "Makhado",
-      count:
-        totalMakhadoMunicipalityApplications?.getTotalMunicipalityApplicationsCount ||
-        0,
+      count: makhadoCount || 0,
     },
     {
       name: "Thulamela",
-      count:
-        totalThulamelaMunicipalityApplications?.getTotalMunicipalityApplicationsCount ||
-        0,
+      count: thulamelaCount || 0,
     },
     {
       name: "Collins Chabane",
-      count:
-        totalColinsChabaneMunicipalityApplications?.getTotalMunicipalityApplicationsCount ||
-        0,
+      count: collinsChabaneCount || 0,
     },
     {
       name: "Musina",
-      count:
-        totalMusinaMunicipalityApplications?.getTotalMunicipalityApplicationsCount ||
-        0,
+      count: musinaCount || 0,
     },
   ];
   return (
@@ -248,8 +199,7 @@ const Home = () => {
                         </span>
                         <div className="ms-4">
                           <h2 className="mb-0 font-w600">
-                            {totalApplications &&
-                              totalApplications.getAllUserApplicationsCount}
+                            {allApplicationsCount}
                           </h2>
                           <p className="mb-0 text-nowrap">Total Applications</p>
                         </div>
@@ -261,7 +211,9 @@ const Home = () => {
                   <div
                     className="card booking"
                     style={{ cursor: "pointer", backgroundColor: "#FF5271" }}
-                    onClick={() => handleDetails("approved")}>
+                    onClick={() =>
+                      handleDetails("Passed - Indigent Application Successful")
+                    }>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -272,7 +224,7 @@ const Home = () => {
                         </span>
                         <div className="ms-4">
                           <h2 className="mb-0 font-w600">
-                            {allApproved && allApproved.getAllApprovedCount}
+                            {passedApplications}
                           </h2>
                           <p className="mb-0 text-nowrap ">Total Approved</p>
                         </div>
@@ -284,7 +236,11 @@ const Home = () => {
                   <div
                     className="card booking"
                     style={{ cursor: "pointer", backgroundColor: "#FFEB66" }}
-                    onClick={() => handleDetails("declined")}>
+                    onClick={() =>
+                      handleDetails(
+                        "Failed - Indigent Application Unsuccessful"
+                      )
+                    }>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -295,7 +251,7 @@ const Home = () => {
                         </span>
                         <div className="ms-4">
                           <h2 className="mb-0 font-w600">
-                            {allDeclined && allDeclined.getAllDeclinedCount}
+                            {failedApplications}
                           </h2>
                           <p className="mb-0">Total Declined</p>
                         </div>
@@ -318,7 +274,9 @@ const Home = () => {
                           />
                         </span>
                         <div className="ms-4">
-                          <h2 className="mb-0 font-w600">4</h2>
+                          <h2 className="mb-0 font-w600">
+                            {deceasedApplications}
+                          </h2>
                           <p className="mb-0">Total Deceased</p>
                         </div>
                       </div>
@@ -340,7 +298,9 @@ const Home = () => {
                           />
                         </span>
                         <div className="ms-4">
-                          <h2 className="mb-0 font-w600">44</h2>
+                          <h2 className="mb-0 font-w600">
+                            {invalidApplications}
+                          </h2>
                           <p className="mb-0">Total Invalid</p>
                         </div>
                       </div>
@@ -397,10 +357,7 @@ const Home = () => {
                     style={{ cursor: "pointer" }}
                     onClick={() => handleMunicipalDetails("Makhado")}>
                     <div className="text-center">
-                      <h3 className="fs-28 font-w600">
-                        {totalMakhadoMunicipalityApplications &&
-                          totalMakhadoMunicipalityApplications.getTotalMunicipalityApplicationsCount}
-                      </h3>
+                      <h3 className="fs-28 font-w600">{makhadoCount}</h3>
                       <span className="fs-16">Makhado Local Municipality</span>
                     </div>
                   </div>
@@ -409,10 +366,7 @@ const Home = () => {
                     style={{ cursor: "pointer" }}
                     onClick={() => handleMunicipalDetails("Thulamela2")}>
                     <div className="text-center">
-                      <h3 className="fs-28 font-w600">
-                        {totalThulamelaMunicipalityApplications &&
-                          totalThulamelaMunicipalityApplications.getTotalMunicipalityApplicationsCount}
-                      </h3>
+                      <h3 className="fs-28 font-w600">{thulamelaCount}</h3>
                       <span className="fs-16">
                         Thulamela Local Municipality
                       </span>
@@ -423,10 +377,7 @@ const Home = () => {
                     style={{ cursor: "pointer" }}
                     onClick={() => handleMunicipalDetails("Collins Chabane")}>
                     <div className="text-center">
-                      <h3 className="fs-28 font-w600">
-                        {totalColinsChabaneMunicipalityApplications &&
-                          totalColinsChabaneMunicipalityApplications.getTotalMunicipalityApplicationsCount}
-                      </h3>
+                      <h3 className="fs-28 font-w600">{collinsChabaneCount}</h3>
                       <span className="fs-16">
                         Collins Chabane Local Municipality
                       </span>
@@ -437,10 +388,7 @@ const Home = () => {
                     style={{ cursor: "pointer" }}
                     onClick={() => handleMunicipalDetails("Musina")}>
                     <div className="text-center">
-                      <h3 className="fs-28 font-w600">
-                        {totalMusinaMunicipalityApplications &&
-                          totalMusinaMunicipalityApplications.getTotalMunicipalityApplicationsCount}
-                      </h3>
+                      <h3 className="fs-28 font-w600">{musinaCount}</h3>
                       <span className="fs-16 wspace-no">
                         Musina Local Municipality
                       </span>

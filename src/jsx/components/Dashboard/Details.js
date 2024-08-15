@@ -1,20 +1,24 @@
 import React, { useMemo, useState, useEffect, Fragment } from "react";
 import { useQuery } from "@apollo/client";
 import * as XLSX from "xlsx";
+import Modal from "react-bootstrap/Modal";
 
 import {
   GET_ACTIVE_INDIGENTS,
   GET_ALL_MUNICIPALITY_APPLICATIONS,
 } from "../../../Graphql/Queries";
 
+import SelectedMunicipalDetails from "./SelectedMunicipalDetails";
+
 //Import Components
 const Details = ({ municipality }) => {
+  const [showCard, setShowCard] = useState(false);
+  const [dataType, setDataType] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
   const [activeFilters, setActiveFilters] = useState([]);
   const { data: allMunicipalityApplications } = useQuery(
     GET_ALL_MUNICIPALITY_APPLICATIONS,
     {
-      pollInterval: 4000,
       variables: {
         municipality: municipality,
       },
@@ -25,15 +29,23 @@ const Details = ({ municipality }) => {
     pollInterval: 2000,
   });
 
-  const totalApplications =
+  const allApplicationsCount =
     allMunicipalityApplications?.getAllMunicipalityApplications.length;
-  const successfulApplications =
+  const passedApplications =
     allMunicipalityApplications?.getAllMunicipalityApplications.filter(
-      (app) => app.status === "Passed - Indigent Application Successful"
+      (record) => record.status === "Passed - Indigent Application Successful"
     ).length;
   const failedApplications =
     allMunicipalityApplications?.getAllMunicipalityApplications.filter(
-      (app) => app.status === "Failed - Indigent Application Unsuccessful"
+      (record) => record.status === "Failed - Indigent Application Unsuccessful"
+    ).length;
+  const deceasedApplications =
+    allMunicipalityApplications?.getAllMunicipalityApplications.filter(
+      (record) => record.status === "deceased"
+    ).length;
+  const invalidApplications =
+    allMunicipalityApplications?.getAllMunicipalityApplications.filter(
+      (record) => record.status === "invalid"
     ).length;
 
   const excelData =
@@ -46,32 +58,6 @@ const Details = ({ municipality }) => {
     XLSX.writeFile(wb, "applications" + ".xlsx");
   };
 
-  function successPercentage(success, fail) {
-    var tot = fail + success;
-    return (success * 100) / tot;
-  }
-
-  function failurePercentage(success, fail) {
-    var tot = fail + success;
-    return (fail * 100) / tot;
-  }
-
-  const convertToDate = (dateString) => {
-    // Extract the year, month, and day from the string
-    const year = dateString.substring(0, 4);
-    const month = dateString.substring(4, 6) - 1; // Months are 0-indexed in JavaScript Date
-    const day = dateString.substring(6, 8);
-
-    // Create a new Date object
-    const date = new Date(year, month, day);
-
-    // Format the date as a string (YYYY-MM-DD)
-    const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
-      .toString()
-      .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
-
-    return formattedDate;
-  };
   const [filters, setFilters] = useState({
     combinedStatus: "",
     municipality: "",
@@ -116,43 +102,27 @@ const Details = ({ municipality }) => {
     setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
   };
 
-  // Helper functions to get label and icon for each filter
-  const getLabelForFilter = (filter) => {
-    switch (filter) {
-      case "deceased":
-        return "Deceased";
-      case "municipality":
-        return "Municipality";
-      case "fromDate":
-        return "From Date";
-      case "toDate":
-        return "To Date";
-      case "status":
-        return "Status";
-      default:
-        return "";
-    }
-  };
-
-  const getIconForFilter = (filter) => {
-    switch (filter) {
-      case "deceased":
-        return "book";
-      case "municipality":
-        return "clipboard";
-      case "fromDate":
-        return "calendar-alt";
-      case "toDate":
-        return "calendar-alt";
-      case "status":
-        return "users";
-      default:
-        return "filter";
-    }
-  };
+  function handleDetails(type) {
+    setDataType(type);
+    setShowCard(true);
+  }
 
   return (
     <>
+      <Modal
+        show={showCard}
+        fullscreen={true}
+        onHide={() => setShowCard(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title></Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <SelectedMunicipalDetails
+            dataType={dataType}
+            municipality={municipality}
+          />
+        </Modal.Body>
+      </Modal>
       <div className="row" style={{ background: "#F8F8F8", height: "100%" }}>
         <div className="col-xl-12">
           <div className="row">
@@ -161,7 +131,9 @@ const Details = ({ municipality }) => {
                 <div className="col-xl-3 col-sm-6">
                   <div
                     className="card booking"
-                    style={{ cursor: "pointer", backgroundColor: "#A2A6F6" }}>
+                    style={{ cursor: "pointer", backgroundColor: "#A2A6F6" }}
+                    onClick={() => handleDetails("all")}>
+                    >
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -172,7 +144,7 @@ const Details = ({ municipality }) => {
                         </span>
                         <div className="ms-4">
                           <h4 className="mb-0 font-w600">
-                            {totalApplications}
+                            {allApplicationsCount}
                           </h4>
                           <p className="mb-0 text-nowrap">Total Applications</p>
                         </div>
@@ -183,7 +155,10 @@ const Details = ({ municipality }) => {
                 <div className="col-xl-3 col-sm-6">
                   <div
                     className="card booking"
-                    style={{ cursor: "pointer", backgroundColor: "#FF5271" }}>
+                    style={{ cursor: "pointer", backgroundColor: "#FF5271" }}
+                    onClick={() =>
+                      handleDetails("Passed - Indigent Application Successful")
+                    }>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -194,7 +169,7 @@ const Details = ({ municipality }) => {
                         </span>
                         <div className="ms-4">
                           <h4 className="mb-0 font-w600">
-                            {successfulApplications}
+                            {passedApplications}
                           </h4>
                           <p className="mb-0 text-nowrap">Total Approved</p>
                         </div>
@@ -205,7 +180,12 @@ const Details = ({ municipality }) => {
                 <div className="col-xl-3 col-sm-6">
                   <div
                     className="card booking"
-                    style={{ cursor: "pointer", backgroundColor: "#FFEB66" }}>
+                    style={{ cursor: "pointer", backgroundColor: "#FFEB66" }}
+                    onClick={() =>
+                      handleDetails(
+                        "Failed - Indigent Application Unsuccessful"
+                      )
+                    }>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -228,7 +208,8 @@ const Details = ({ municipality }) => {
                 <div className="col-xl-3 col-sm-6">
                   <div
                     className="card booking"
-                    style={{ cursor: "pointer", backgroundColor: "#76F4B9" }}>
+                    style={{ cursor: "pointer", backgroundColor: "#76F4B9" }}
+                    onClick={() => handleDetails("deceased")}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -238,7 +219,9 @@ const Details = ({ municipality }) => {
                           />
                         </span>
                         <div className="ms-4">
-                          <h4 className="mb-0 font-w600">4</h4>
+                          <h4 className="mb-0 font-w600">
+                            {deceasedApplications}
+                          </h4>
                           <p className="mb-0">Total Deceased</p>
                         </div>
                       </div>
@@ -249,7 +232,8 @@ const Details = ({ municipality }) => {
                 <div className="col-xl-3 col-sm-6">
                   <div
                     className="card booking"
-                    style={{ cursor: "pointer", backgroundColor: "#F4BA76" }}>
+                    style={{ cursor: "pointer", backgroundColor: "#F4BA76" }}
+                    onClick={() => handleDetails("invalid")}>
                     <div className="card-body">
                       <div className="booking-status d-flex align-items-center">
                         <span>
@@ -259,7 +243,9 @@ const Details = ({ municipality }) => {
                           />
                         </span>
                         <div className="ms-4">
-                          <h4 className="mb-0 font-w600">4</h4>
+                          <h4 className="mb-0 font-w600">
+                            {invalidApplications}
+                          </h4>
                           <p className="mb-0">Total Invalid</p>
                         </div>
                       </div>
